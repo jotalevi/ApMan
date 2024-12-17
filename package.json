@@ -1,0 +1,20 @@
+{
+  "name": "apman",
+  "version": "1.0.0",
+  "description": "Postman-based API client generator with Axios and joi",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [
+    "postman",
+    "axios",
+    "api",
+    "client",
+    "generator"
+  ],
+  "author": "Eros Talevi <talevineto@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "joi": "^17.13.3"
+  }
+}
