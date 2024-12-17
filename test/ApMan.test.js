@@ -1,11 +1,11 @@
 const path = require("path");
-const ApMan = require("..");
+const ApMan = require("../index");
 const express = require("express");
 const http = require("http");
 
 const postmanJsonPath = path.join(__dirname, "../sample.json");
 
-describe("ApMan Test Suite (with Updated Postman Schema)", () => {
+describe("ApMan Test Suite (Direct URL Usage)", () => {
   let api;
   let server;
 
@@ -33,8 +33,9 @@ describe("ApMan Test Suite (with Updated Postman Schema)", () => {
     // Start the server dynamically
     server = http.createServer(app);
     server.listen(2306);
-    const variables = { base_url: "http://localhost:2306" };
-    const apmanInstance = new ApMan(postmanJsonPath, variables);
+
+    // Initialize ApMan without variables
+    const apmanInstance = new ApMan(postmanJsonPath, `http://localhost:2306`);
     api = apmanInstance.getMethods();
 
     done();
@@ -44,10 +45,31 @@ describe("ApMan Test Suite (with Updated Postman Schema)", () => {
     server.close(done);
   });
 
-  test();
+  test("should generate methods from Postman JSON", () => {
+    expect(api).toHaveProperty("userGetUser");
+    expect(api).toHaveProperty("userCreateUser");
+  });
 
   test("should successfully perform a GET request (Get User)", async () => {
     const response = await api.userGetUser();
     expect(response).toEqual({ id: 1, name: "John Doe" });
+  });
+
+  test("should successfully perform a POST request (Create User)", async () => {
+    const response = await api.userCreateUser({
+      username: "JohnDoe",
+      email: "j.doe@example.com",
+    });
+    expect(response).toEqual({
+      success: true,
+      username: "JohnDoe",
+      email: "j.doe@example.com",
+    });
+  });
+
+  test("should throw validation error for missing input (Create User)", async () => {
+    await expect(api.userCreateUser({ username: "JohnDoe" })).rejects.toThrow(
+      'Validation Error: "email" is required'
+    );
   });
 });

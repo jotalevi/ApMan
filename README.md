@@ -2,19 +2,17 @@
 
 **ApMan** (API Manager) is a dynamic API client generator based on **Postman Collections**. It automatically creates methods for API requests, handles input validation using **Joi**, and integrates seamlessly with **Axios** for HTTP requests.
 
+This version builds requests directly from the **`url` field** in the Postman JSON file. No need for placeholder variables!
+
 ---
 
 ## **Features**
 
 - 🚀 **Automatic API Method Generation**: Generates methods dynamically based on Postman folder and request names.
-- ⚙️ **Input Validation**: Ensures valid input using **Joi** before sending requests.
-- 🌐 **Customizable Base URL**: Allows setting a global base URL and placeholder variables for your API.
-- 📄 **Supports All Body Modes**:
-  - `formdata` (key-value pairs)
-  - `urlencoded` (application/x-www-form-urlencoded)
-  - `raw` (JSON bodies)
-- 🔄 **Real-Time Placeholder Replacement**: Replace Postman placeholders like `{{base_url}}` dynamically with your own values.
-- ✅ **Easy Integration**: Designed for effortless integration into Node.js projects.
+- 🌐 **Base URL Support**: Easily set a global base URL for all requests.
+- 📄 **Supports `formdata` and `urlencoded`**: Automatically parses request body inputs.
+- ✅ **Input Validation**: Ensures valid input using **Joi** before sending requests.
+- 🔗 **Direct URL Usage**: Uses the `url.raw` value directly from the Postman collection.
 
 ---
 
@@ -60,10 +58,7 @@ To use `ApMan`, export your Postman collection as a JSON file:
 const ApMan = require("apman");
 
 // Create an instance of ApMan
-const apiInstance = new ApMan("./sample.json", "https://api.example.com", {
-  base_url: "https://api.example.com", // Custom placeholder variable
-  token: "your_access_token", // Other placeholders from Postman
-});
+const apiInstance = new ApMan("./sample.json", "https://api.example.com");
 
 // Get the generated methods
 const api = apiInstance.getMethods();
@@ -88,64 +83,40 @@ const api = apiInstance.getMethods();
 
 ---
 
-## **Variable Placeholders**
+## **How It Works**
 
-You can replace placeholders defined in your Postman collection dynamically using the `variables` parameter. For example, `{{base_url}}` in the Postman collection will be replaced at runtime:
+1. **Base URL**:
 
-```javascript
-const apiInstance = new ApMan("./sample.json", "https://api.example.com", {
-  base_url: "https://api.example.com",
-  token: "your_access_token",
-});
-```
+   - Set a global `baseUrl` during initialization.
+   - All requests will use this as the prefix for their paths.
 
-### Example Placeholder Usage
+   Example:
 
-**Postman Collection**:
+   ```javascript
+   const apiInstance = new ApMan("./sample.json", "https://api.example.com");
+   ```
 
-```json
-"url": "{{base_url}}/user"
-```
+2. **Dynamic Methods**:
 
-**Final Resolved URL**:
+   - Methods are generated based on the **folder** and **request names** in the Postman JSON.
+   - Names are converted to **camelCase** for easy use.
 
-```
-https://api.example.com/user
-```
+   **Postman Example**:
 
----
+   - Folder: `User`
+   - Request: `Get User`
+   - **Generated Method**: `userGetUser`
 
-## **Supported Body Modes**
+3. **Input Validation**:
 
-ApMan supports multiple body modes from Postman:
+   - For `POST` requests, ApMan automatically validates required inputs (e.g., `formdata` keys) using **Joi**.
 
-- **formdata**:
+   Example Validation:
 
-  ```javascript
-  await api.userCreateUser({
-    username: "JohnDoe",
-    email: "j.doe@example.com",
-  });
-  ```
-
-- **urlencoded**:
-  Automatically parses key-value pairs from Postman JSON.
-
-- **raw (JSON)**:
-  Handles raw JSON bodies and validates the fields.
-
----
-
-## **Input Validation**
-
-ApMan uses **Joi** for input validation. It ensures that required parameters are passed to API methods before making the request.
-
-For example:
-
-```javascript
-await api.userCreateUser({ username: "JohnDoe" });
-// Throws: "Validation Error: "email" is required"
-```
+   ```javascript
+   await api.userCreateUser({ username: "JohnDoe" });
+   // Throws: "Validation Error: "email" is required"
+   ```
 
 ---
 
@@ -154,12 +125,11 @@ await api.userCreateUser({ username: "JohnDoe" });
 ### Constructor
 
 ```javascript
-const apiInstance = new ApMan(postmanJsonPath, baseUrl, variables);
+const apiInstance = new ApMan(postmanJsonPath, baseUrl);
 ```
 
 - **`postmanJsonPath`** (string): Path to your Postman collection JSON file.
 - **`baseUrl`** (string): Global base URL for API requests.
-- **`variables`** (object): Placeholder key-value pairs to resolve Postman variables.
 
 ### `getMethods()`
 
@@ -170,6 +140,45 @@ Example:
 ```javascript
 const api = apiInstance.getMethods();
 api.userGetUser(); // Calls the 'Get User' endpoint
+```
+
+---
+
+## **Example JSON**
+
+Here is an example of the Postman JSON input:
+
+```json
+{
+  "name": "User",
+  "item": [
+    {
+      "name": "Get User",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "/user"
+        }
+      }
+    },
+    {
+      "name": "Create User",
+      "request": {
+        "method": "POST",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "username", "value": "JohnDoe", "type": "text" },
+            { "key": "email", "value": "j.doe@example.com", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "/user"
+        }
+      }
+    }
+  ]
+}
 ```
 
 ---

@@ -1,6 +1,6 @@
 {
   "name": "apman",
-  "version": "1.0.4+ale",
+  "version": "1.0.5+xanda",
   "description": "Postman-based API client generator with Axios and joi",
   "main": "index.js",
   "scripts": {
