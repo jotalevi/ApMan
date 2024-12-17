@@ -4,7 +4,7 @@
   "description": "Postman-based API client generator with Axios and joi",
   "main": "index.js",
   "scripts": {
-    "publish": "npm publish --access public",
+    "ps": "npm publish --access public",
     "test": "jest"
   },
   "jest": {
