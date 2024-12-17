@@ -184,6 +184,6 @@ Feel free to open issues or submit pull requests for improvements and bug fixes.
 
 For any questions or support, reach out to:
 
-- **Author**: Your Name
-- **Email**: your.email@example.com
-- **GitHub**: [Your GitHub Profile](https://github.com/yourusername)
+- **Author**: Eros Talevi
+- **Email**: talevineto@gmail.com
+- **GitHub**: [Your GitHub Profile](https://github.com/jotalevi)
