@@ -1,6 +1,6 @@
 {
   "name": "apman",
-  "version": "1.0.0",
+  "version": "1.0.1+ale",
   "description": "Postman-based API client generator with Axios and joi",
   "main": "index.js",
   "scripts": {},
@@ -11,6 +11,10 @@
     "client",
     "generator"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jotalevi/ApMan.git"
+  },
   "author": "Eros Talevi <talevineto@gmail.com>",
   "license": "MIT",
   "dependencies": {
