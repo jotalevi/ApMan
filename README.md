@@ -186,4 +186,4 @@ For any questions or support, reach out to:
 
 - **Author**: Eros Talevi
 - **Email**: talevineto@gmail.com
-- **GitHub**: [Your GitHub Profile](https://github.com/jotalevi)
+- **GitHub**: [jotalevi](https://github.com/jotalevi)
