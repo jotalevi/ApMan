@@ -55,30 +55,31 @@ To use `ApMan`, export your Postman collection as a JSON file:
 ### Importing and Initializing ApMan
 
 ```javascript
-const ApMan = require("apman");
+// Import ApMan
+const ApMan = require("./index");
 
-// Create an instance of ApMan
-const apiInstance = new ApMan("./sample.json", "https://api.example.com");
+// Import your json from postman
+const json = require("./test/sample.json");
 
-// Get the generated methods
-const api = apiInstance.getMethods();
+const api = new ApMan(json, {
+  base_url: "miurl.com",
+});
 
-// Example: Call a GET request
-(async () => {
-  try {
-    const userData = await api.userGetUser();
-    console.log("User Data:", userData);
+// List Available methods
+console.log(apMan.methods);
 
-    // Example: Call a POST request with validation
-    const newUser = await api.userCreateUser({
-      username: "JohnDoe",
-      email: "j.doe@example.com",
+// Example: Login, then use token to list all users
+api
+  .call("iamAuthLogin", {
+    body: { rut: "25535866", password: "ut56gcmqk1btnjuu" },
+  })
+  .then((res) => {
+    //Set Headers
+    apMan.addHeader("Authorization", `Bearer ${res.accessToken}`);
+    apMan.call("iamUserListAll", {}).then((res) => {
+      console.log(res);
     });
-    console.log("New User:", newUser);
-  } catch (error) {
-    console.error("API Error:", error.message);
-  }
-})();
+  });
 ```
 
 ---
@@ -93,7 +94,9 @@ const api = apiInstance.getMethods();
    Example:
 
    ```javascript
-   const apiInstance = new ApMan("./sample.json", "https://api.example.com");
+   const api = new ApMan(json, {
+     base_url: "miurl.com",
+   });
    ```
 
 2. **Dynamic Methods**:
@@ -114,128 +117,28 @@ const api = apiInstance.getMethods();
    Example Validation:
 
    ```javascript
-   await api.userCreateUser({ username: "JohnDoe" });
+   api.call("userCreateUser", { body: { username: "JohnDoe" } });
    // Throws: "Validation Error: "email" is required"
    ```
 
 ---
 
-## **API Reference**
-
-### Constructor
-
-```javascript
-const apiInstance = new ApMan(postmanJsonPath, baseUrl);
-```
-
-- **`postmanJsonPath`** (string): Path to your Postman collection JSON file.
-- **`baseUrl`** (string): Global base URL for API requests.
-
-### `getMethods()`
-
-Returns an object containing all dynamically generated API methods.
-
-Example:
-
-```javascript
-const api = apiInstance.getMethods();
-api.userGetUser(); // Calls the 'Get User' endpoint
-```
-
----
-
 ## **Example JSON**
 
-Here is an example of the Postman JSON input:
-
-```json
-{
-  "name": "User",
-  "item": [
-    {
-      "name": "Get User",
-      "request": {
-        "method": "GET",
-        "url": {
-          "raw": "/user"
-        }
-      }
-    },
-    {
-      "name": "Create User",
-      "request": {
-        "method": "POST",
-        "body": {
-          "mode": "formdata",
-          "formdata": [
-            { "key": "username", "value": "JohnDoe", "type": "text" },
-            { "key": "email", "value": "j.doe@example.com", "type": "text" }
-          ]
-        },
-        "url": {
-          "raw": "/user"
-        }
-      }
-    }
-  ]
-}
-```
-
----
-
-## **Error Handling**
-
-ApMan throws detailed errors for:
-
-1. **Input Validation Errors**:
-   - Example: Missing required fields in `POST` requests.
-2. **Request Failures**:
-   - Handles network issues or non-2xx HTTP responses.
-
-Example:
+There is a sample.json file inside the /test folder.
+You can import it with:
 
 ```javascript
-try {
-  await api.userCreateUser({ username: "JohnDoe" });
-} catch (error) {
-  console.error("API Error:", error.message);
-}
+const json = require("apman/test/sample.json");
 ```
-
----
-
-## **Testing**
-
-To test your ApMan instance:
-
-1. Use tools like **Jest** for testing.
-2. Mock endpoints with tools like **Express** to simulate real API responses.
-
-Example Test:
-
-```javascript
-test("should perform a POST request", async () => {
-  const response = await api.userCreateUser({
-    username: "JohnDoe",
-    email: "j.doe@example.com",
-  });
-  expect(response).toEqual({ success: true });
-});
-```
-
----
 
 ## **License**
 
 [MIT](LICENSE)
 
----
-
 ## **Contributing**
 
 Feel free to open issues or submit pull requests for improvements and bug fixes.
-
----
 
 ## **Contact**
 

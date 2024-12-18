@@ -1,9 +1,7 @@
-const path = require("path");
 const ApMan = require("../index");
 const express = require("express");
 const http = require("http");
-
-const postmanJsonPath = path.join(__dirname, "../sample.json");
+const json = require("./sample.json");
 
 describe("ApMan Test Suite (Direct URL Usage)", () => {
   let api;
@@ -35,8 +33,9 @@ describe("ApMan Test Suite (Direct URL Usage)", () => {
     server.listen(2306);
 
     // Initialize ApMan without variables
-    const apmanInstance = new ApMan(postmanJsonPath, `http://localhost:2306`);
-    api = apmanInstance.getMethods();
+    api = new ApMan(json, {
+      base_url: "http://localhost:2306",
+    });
 
     done();
   });
@@ -46,19 +45,21 @@ describe("ApMan Test Suite (Direct URL Usage)", () => {
   });
 
   test("should generate methods from Postman JSON", () => {
-    expect(api).toHaveProperty("userGetUser");
-    expect(api).toHaveProperty("userCreateUser");
+    expect(api.methods).toHaveProperty("userGetUser");
+    expect(api.methods).toHaveProperty("userCreateUser");
   });
 
   test("should successfully perform a GET request (Get User)", async () => {
-    const response = await api.userGetUser();
+    const response = await api.call("userGetUser");
     expect(response).toEqual({ id: 1, name: "John Doe" });
   });
 
   test("should successfully perform a POST request (Create User)", async () => {
-    const response = await api.userCreateUser({
-      username: "JohnDoe",
-      email: "j.doe@example.com",
+    const response = await api.call("userCreateUser", {
+      body: {
+        username: "JohnDoe",
+        email: "j.doe@example.com",
+      },
     });
     expect(response).toEqual({
       success: true,
@@ -68,8 +69,12 @@ describe("ApMan Test Suite (Direct URL Usage)", () => {
   });
 
   test("should throw validation error for missing input (Create User)", async () => {
-    await expect(api.userCreateUser({ username: "JohnDoe" })).rejects.toThrow(
-      'Validation Error: "email" is required'
-    );
+    await expect(
+      api.call("userCreateUser", {
+        body: {
+          username: "JohnDoe",
+        },
+      })
+    ).rejects.toThrow('"body.email" is required');
   });
 });
