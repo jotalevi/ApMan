@@ -62,7 +62,7 @@ const ApMan = require("./index");
 const json = require("./test/sample.json");
 
 const api = new ApMan(json, {
-  base_url: "miurl.com",
+  base_url: "example.com",
 });
 
 // List Available methods
@@ -75,11 +75,20 @@ api
   })
   .then((res) => {
     //Set Headers
-    apMan.addHeader("Authorization", `Bearer ${res.accessToken}`);
-    apMan.call("iamUserListAll", {}).then((res) => {
+    api.addHeader("Authorization", `Bearer ${res.accessToken}`);
+    api.call("iamUserListAll", {}).then((res) => {
       console.log(res);
     });
   });
+
+// You can use direct method calls too:
+api.iamAuthLogin({ body: { rut: "25535866", password: "ut56gcmqk1btnjuu" } headers: {} });
+
+// but don't forget to pass the headers when calling methods this way
+api.iamUserListAll({ headers: api._headers });
+
+// If you want to clear your headers you can use:
+api.clearHeaders();
 ```
 
 ---
