@@ -1,8 +1,14 @@
 # ApMan
 
 **ApMan** (API Manager) is a dynamic API client generator based on **Postman Collections**. It automatically creates methods for API requests, handles input validation using **Joi**, and integrates seamlessly with **Axios** for HTTP requests.
-
-This version builds requests directly from the **`url` field** in the Postman JSON file. No need for placeholder variables!
+![npm](https://img.shields.io/npm/v/apman?color=blue&style=flat-square)
+![GitHub](https://img.shields.io/github/license/jotalevi/apman?color=brightgreen&style=flat-square)
+![npm](https://img.shields.io/npm/dm/apman?color=orange&style=flat-square)
+![GitHub issues](https://img.shields.io/github/issues/jotalevi/apman?style=flat-square)
+![GitHub Repo stars](https://img.shields.io/github/stars/jotalevi/apman?color=yellow&style=flat-square)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/jotalevi/apman?style=flat-square)
+![Platform](https://img.shields.io/badge/platform-nodejs-blue?style=flat-square)
+![GitHub contributors](https://img.shields.io/github/contributors/jotalevi/apman?style=flat-square)
 
 ---
 
@@ -12,7 +18,6 @@ This version builds requests directly from the **`url` field** in the Postman JS
 - 🌐 **Base URL Support**: Easily set a global base URL for all requests.
 - 📄 **Supports `formdata` and `urlencoded`**: Automatically parses request body inputs.
 - ✅ **Input Validation**: Ensures valid input using **Joi** before sending requests.
-- 🔗 **Direct URL Usage**: Uses the `url.raw` value directly from the Postman collection.
 
 ---
 
