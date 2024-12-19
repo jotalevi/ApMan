@@ -3,6 +3,7 @@
   "version": "1.2.1+sancristo",
   "description": "Postman-based API client generator with Axios and joi",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "ps": "npm publish --access public",
     "test": "jest"

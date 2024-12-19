@@ -1,5 +1,5 @@
-const axios = require("axios");
-const Joi = require("joi");
+import axios from "axios";
+import Joi from "joi";
 
 class ApMan {
   constructor(object, variables) {
