@@ -214,4 +214,4 @@ class ApMan {
   }
 }
 
-module.exports = ApMan;
+export default ApMan;
